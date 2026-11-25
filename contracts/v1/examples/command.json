@@ -1,0 +1,7 @@
+{
+  "command_id": "cmd-1",
+  "target_boot_id": "boot-001",
+  "actuator": "fan",
+  "state": "on",
+  "ttl_ms": 5000
+}

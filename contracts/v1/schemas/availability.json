@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drak.invalid/contracts/v1/availability.json",
+  "type": "object",
+  "properties": {
+    "device_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "boot_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "status": {
+      "enum": [
+        "online",
+        "offline"
+      ]
+    }
+  },
+  "required": [
+    "device_id",
+    "boot_id",
+    "status"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,9 @@
+{
+  "device_id": "room-01",
+  "boot_id": "boot-001",
+  "sequence": 10,
+  "free_heap_bytes": 80000,
+  "queue_depth": 0,
+  "mode": "online",
+  "faults": []
+}

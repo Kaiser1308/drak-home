@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drak.invalid/contracts/v1/health.json",
+  "type": "object",
+  "properties": {
+    "device_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "boot_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2147483647
+    },
+    "free_heap_bytes": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2147483647
+    },
+    "queue_depth": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2147483647
+    },
+    "mode": {
+      "enum": [
+        "online",
+        "offline",
+        "degraded"
+      ]
+    },
+    "faults": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+      },
+      "minItems": 0,
+      "maxItems": 128
+    }
+  },
+  "required": [
+    "device_id",
+    "boot_id",
+    "sequence",
+    "free_heap_bytes",
+    "queue_depth",
+    "mode",
+    "faults"
+  ],
+  "additionalProperties": false
+}

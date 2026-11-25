@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drak.invalid/contracts/v1/manifest.json",
+  "type": "object",
+  "properties": {
+    "protocol_version": {
+      "const": "1.0"
+    },
+    "device_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "boot_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "hardware": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "firmware_version": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "sensors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+          },
+          "type": {
+            "enum": [
+              "temperature",
+              "boolean"
+            ]
+          },
+          "unit": {
+            "enum": [
+              "celsius",
+              "none"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "unit"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 128
+    },
+    "actuators": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+          },
+          "type": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+          },
+          "commands": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "on",
+                "off"
+              ]
+            },
+            "minItems": 1,
+            "maxItems": 2
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "commands"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 128
+    },
+    "runtime": {
+      "type": "object",
+      "properties": {
+        "automation": {
+          "type": "boolean"
+        },
+        "max_automations": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "max_rules_per_automation": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "max_artifact_bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "operators": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "gt",
+              "gte",
+              "lt",
+              "lte",
+              "eq",
+              "neq"
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 128
+        },
+        "triggers": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "sensor_update",
+              "timer"
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 128
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+          },
+          "minItems": 0,
+          "maxItems": 128
+        },
+        "persistent": {
+          "type": "boolean"
+        },
+        "rollback": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "automation",
+        "max_automations",
+        "max_rules_per_automation",
+        "max_artifact_bytes",
+        "operators",
+        "triggers",
+        "features",
+        "persistent",
+        "rollback"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "protocol_version",
+    "device_id",
+    "boot_id",
+    "hardware",
+    "firmware_version",
+    "sensors",
+    "actuators",
+    "runtime"
+  ],
+  "additionalProperties": false
+}

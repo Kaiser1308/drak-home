@@ -1,0 +1,54 @@
+{
+  "dsl_version": "0.1",
+  "id": "bedroom_cooling",
+  "version": 1,
+  "intent": "Bật quạt trên 30°C trong 10 giây, tắt dưới 28°C trong 10 giây.",
+  "placement": {
+    "strategy": "lowest_capable_layer",
+    "require_device_independence": true,
+    "require_internet_independence": true
+  },
+  "trigger": {
+    "type": "sensor_update",
+    "source": "bedroom.temperature"
+  },
+  "rules": [
+    {
+      "id": "cooling_on",
+      "condition": {
+        "operator": "gt",
+        "value": 30,
+        "duration_ms": 10000
+      },
+      "action": {
+        "capability": "bedroom.fan.set_state",
+        "arguments": {
+          "state": "on"
+        }
+      }
+    },
+    {
+      "id": "cooling_off",
+      "condition": {
+        "operator": "lt",
+        "value": 28,
+        "duration_ms": 10000
+      },
+      "action": {
+        "capability": "bedroom.fan.set_state",
+        "arguments": {
+          "state": "off"
+        }
+      }
+    }
+  ],
+  "constraints": {
+    "cooldown_ms": 60000,
+    "max_sensor_age_ms": 15000,
+    "respect_manual_override": true
+  },
+  "verification": {
+    "method": "reported_state",
+    "timeout_ms": 5000
+  }
+}

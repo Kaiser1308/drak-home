@@ -1,0 +1,14 @@
+{
+  "device_id": "room-01",
+  "boot_id": "boot-001",
+  "sequence": 10,
+  "readings": [
+    {
+      "id": "temperature",
+      "value": 31.2,
+      "unit": "celsius",
+      "quality": "observed",
+      "sample_age_ms": 0
+    }
+  ]
+}

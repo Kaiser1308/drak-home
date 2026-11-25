@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drak.invalid/contracts/v1/command-result.json",
+  "type": "object",
+  "properties": {
+    "command_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "device_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "boot_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "status": {
+      "enum": [
+        "acknowledged",
+        "executed",
+        "verified",
+        "uncertain",
+        "failed",
+        "rejected"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "command_id",
+    "device_id",
+    "boot_id",
+    "status"
+  ],
+  "additionalProperties": false
+}

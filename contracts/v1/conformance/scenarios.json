@@ -1,0 +1,341 @@
+{
+  "status": "proposed_not_run",
+  "artifact": "../examples/artifact.json",
+  "clock": "virtual_monotonic_ms",
+  "assumptions": [
+    "actuator writes succeed",
+    "initial state valid",
+    "no initial cooldown except where noted",
+    "test harness captures all timer deadlines; T12 requires freshness expiration to reset"
+  ],
+  "scenarios": [
+    {
+      "id": "T01",
+      "description": "positive",
+      "initial_fan": "off",
+      "events": [
+        {
+          "t_ms": 0,
+          "type": "sample",
+          "value_milli_celsius": 31000
+        },
+        {
+          "t_ms": 5000,
+          "type": "sample",
+          "value_milli_celsius": 31000
+        },
+        {
+          "t_ms": 10000,
+          "type": "tick"
+        }
+      ],
+      "expected_actions": [
+        {
+          "t_ms": 10000,
+          "actuator": "fan",
+          "state": "on"
+        }
+      ]
+    },
+    {
+      "id": "T02",
+      "description": "strict boundary",
+      "initial_fan": "off",
+      "events": [
+        {
+          "t_ms": 0,
+          "type": "sample",
+          "value_milli_celsius": 30000
+        },
+        {
+          "t_ms": 10000,
+          "type": "tick"
+        }
+      ],
+      "expected_actions": []
+    },
+    {
+      "id": "T03",
+      "description": "duration not reached",
+      "initial_fan": "off",
+      "events": [
+        {
+          "t_ms": 0,
+          "type": "sample",
+          "value_milli_celsius": 31000
+        },
+        {
+          "t_ms": 9999,
+          "type": "tick"
+        }
+      ],
+      "expected_actions": []
+    },
+    {
+      "id": "T04",
+      "description": "condition reset",
+      "initial_fan": "off",
+      "events": [
+        {
+          "t_ms": 0,
+          "type": "sample",
+          "value_milli_celsius": 31000
+        },
+        {
+          "t_ms": 5000,
+          "type": "sample",
+          "value_milli_celsius": 29000
+        },
+        {
+          "t_ms": 6000,
+          "type": "sample",
+          "value_milli_celsius": 31000
+        },
+        {
+          "t_ms": 10000,
+          "type": "tick"
+        },
+        {
+          "t_ms": 16000,
+          "type": "tick"
+        }
+      ],
+      "expected_actions": [
+        {
+          "t_ms": 16000,
+          "actuator": "fan",
+          "state": "on"
+        }
+      ]
+    },
+    {
+      "id": "T05",
+      "description": "hysteresis preserve on",
+      "initial_fan": "on",
+      "events": [
+        {
+          "t_ms": 0,
+          "type": "sample",
+          "value_milli_celsius": 29000
+        },
+        {
+          "t_ms": 10000,
+          "type": "tick"
+        }
+      ],
+      "expected_actions": []
+    },
+    {
+      "id": "T06",
+      "description": "cooling off",
+      "initial_fan": "on",
+      "events": [
+        {
+          "t_ms": 0,
+          "type": "sample",
+          "value_milli_celsius": 27000
+        },
+        {
+          "t_ms": 10000,
+          "type": "tick"
+        }
+      ],
+      "expected_actions": [
+        {
+          "t_ms": 10000,
+          "actuator": "fan",
+          "state": "off"
+        }
+      ]
+    },
+    {
+      "id": "T07",
+      "description": "strict lower boundary",
+      "initial_fan": "on",
+      "events": [
+        {
+          "t_ms": 0,
+          "type": "sample",
+          "value_milli_celsius": 28000
+        },
+        {
+          "t_ms": 10000,
+          "type": "tick"
+        }
+      ],
+      "expected_actions": []
+    },
+    {
+      "id": "T08",
+      "description": "cooldown after successful on",
+      "initial_fan": "off",
+      "events": [
+        {
+          "t_ms": 0,
+          "type": "sample",
+          "value_milli_celsius": 31000
+        },
+        {
+          "t_ms": 10000,
+          "type": "tick"
+        },
+        {
+          "t_ms": 11000,
+          "type": "sample",
+          "value_milli_celsius": 27000
+        },
+        {
+          "t_ms": 21000,
+          "type": "tick"
+        },
+        {
+          "t_ms": 25000,
+          "type": "sample",
+          "value_milli_celsius": 27000
+        },
+        {
+          "t_ms": 35000,
+          "type": "sample",
+          "value_milli_celsius": 27000
+        },
+        {
+          "t_ms": 45000,
+          "type": "sample",
+          "value_milli_celsius": 27000
+        },
+        {
+          "t_ms": 55000,
+          "type": "sample",
+          "value_milli_celsius": 27000
+        },
+        {
+          "t_ms": 65000,
+          "type": "sample",
+          "value_milli_celsius": 27000
+        },
+        {
+          "t_ms": 70000,
+          "type": "tick"
+        }
+      ],
+      "expected_actions": [
+        {
+          "t_ms": 10000,
+          "actuator": "fan",
+          "state": "on"
+        },
+        {
+          "t_ms": 70000,
+          "actuator": "fan",
+          "state": "off"
+        }
+      ]
+    },
+    {
+      "id": "T09",
+      "description": "manual override blocks action",
+      "initial_fan": "off",
+      "events": [
+        {
+          "t_ms": 0,
+          "type": "override",
+          "enabled": true
+        },
+        {
+          "t_ms": 0,
+          "type": "sample",
+          "value_milli_celsius": 31000
+        },
+        {
+          "t_ms": 10000,
+          "type": "tick"
+        }
+      ],
+      "expected_actions": []
+    },
+    {
+      "id": "T10",
+      "description": "local independence",
+      "initial_fan": "off",
+      "events": [
+        {
+          "t_ms": 0,
+          "type": "network",
+          "online": false
+        },
+        {
+          "t_ms": 0,
+          "type": "sample",
+          "value_milli_celsius": 31000
+        },
+        {
+          "t_ms": 10000,
+          "type": "tick"
+        }
+      ],
+      "expected_actions": [
+        {
+          "t_ms": 10000,
+          "actuator": "fan",
+          "state": "on"
+        }
+      ]
+    },
+    {
+      "id": "T11",
+      "description": "known invalid sample resets duration",
+      "initial_fan": "off",
+      "events": [
+        {
+          "t_ms": 0,
+          "type": "sample",
+          "value_milli_celsius": 31000
+        },
+        {
+          "t_ms": 5000,
+          "type": "invalid_sample"
+        },
+        {
+          "t_ms": 10000,
+          "type": "tick"
+        },
+        {
+          "t_ms": 11000,
+          "type": "sample",
+          "value_milli_celsius": 31000
+        },
+        {
+          "t_ms": 21000,
+          "type": "tick"
+        }
+      ],
+      "expected_actions": [
+        {
+          "t_ms": 21000,
+          "actuator": "fan",
+          "state": "on"
+        }
+      ]
+    },
+    {
+      "id": "T12",
+      "description": "stale data cannot complete long duration",
+      "initial_fan": "off",
+      "events": [
+        {
+          "t_ms": 0,
+          "type": "sample",
+          "value_milli_celsius": 31000
+        },
+        {
+          "t_ms": 20000,
+          "type": "tick"
+        }
+      ],
+      "expected_actions": [],
+      "artifact_overrides": {
+        "rules.0.duration_ms": 20000
+      }
+    }
+  ]
+}
