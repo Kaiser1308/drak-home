@@ -1,0 +1,72 @@
+# DRAK drak-home: one repo, parts edge (Go) and device (ESP-IDF C++), shared contracts/v1.
+# See APOS docs/setup.md. Each command runs in the part's root inside a fresh worktree (APOS #70),
+# so every command builds from scratch and needs nothing left over from another run.
+schemaVersion: 2
+parts:
+  edge:
+    root: edge
+    stack: go
+    layers:
+      L0:
+        - id: go-vet
+          command: go build ./... && go vet ./...
+          format: exit
+      L1:
+        - id: gotestsum
+          command: gotestsum --junitfile {report} -- ./...
+          format: junit
+      L2:
+        - id: gotestsum-acceptance
+          command: gotestsum --junitfile {report} -- -run '^TestAcceptance' ./...
+          format: junit
+          runOne: gotestsum --junitfile {report} -- -run "^{name|regex}$" "{classname}"
+    tests:
+      paths: ["**/*_test.go"]
+      infra: ["**/testdata/**", "**/main_test.go"]
+      assertPatterns: ['\bt\.(?:Error|Errorf|Fatal|Fatalf|Fail|FailNow)\s*\(']
+      notImplementedPatterns: ["not implemented"]
+      loadErrorPatterns: ['\[build failed\]', '\[setup failed\]', 'cannot find package', 'undefined: ']
+    manifests: [go.mod, go.sum]
+    needsHuman: [go.mod, go.sum]
+    forbid:
+      - '\bt\.Skip(?:Now|f)?\s*\('
+      - '//\s*nolint'
+  device:
+    root: device
+    stack: cpp-espidf
+    layers:
+      L0:
+        - id: idf-build
+          command: bash -c '. "$HOME/esp/esp-idf/export.sh" >/dev/null && idf.py set-target esp32 && idf.py build'
+          format: exit
+      L1:
+        - id: ctest-host
+          command: cmake -S test/host -B build-host >/dev/null && cmake --build build-host -j >/dev/null && ctest --test-dir build-host --output-on-failure --output-junit {report}
+          format: junit
+          runOne: cmake -S test/host -B build-host >/dev/null && cmake --build build-host -j >/dev/null && ctest --test-dir build-host --output-on-failure -R "^{name|regex}$" --output-junit {report}
+    tests:
+      paths: ["test/**"]
+      infra: ["test/host/CMakeLists.txt"]
+      assertPatterns: ['\b(?:EXPECT|ASSERT)_[A-Z_]+\s*\(']
+      notImplementedPatterns: ["not implemented"]
+      loadErrorPatterns: ['Could not find executable', 'Not Run', 'Failed  Required']
+    manifests: ["**/idf_component.yml", dependencies.lock]
+    needsHuman: ["**/idf_component.yml", dependencies.lock]
+    forbid:
+      - '\bGTEST_SKIP\s*\('
+      - '\bDISABLED_\w+'
+  # contracts/** is sensitive for both edge and device, but a part's needsHuman globs are rooted at the
+  # part's root (edge/../contracts/** never matches). This part owns contracts/ so that every change
+  # there needs a Human, and checks it with the edge schema test.
+  contracts:
+    root: contracts
+    layers:
+      L1:
+        - id: schema-examples
+          command: cd ../edge && gotestsum --junitfile {report} -- -run '^TestAcceptance' ./internal/contract/
+          format: junit
+    needsHuman: ["**"]
+triggers:
+  - when: { changed: ["contracts/**"] }
+    at: submit
+    run: ["edge.L2", "device.L1"]
