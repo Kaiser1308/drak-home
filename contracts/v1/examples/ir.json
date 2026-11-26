@@ -1,0 +1,26 @@
+{
+  "automation_id": "bedroom_cooling",
+  "version": 1,
+  "dependencies": {
+    "sensors": [
+      "room-01.temperature"
+    ],
+    "actuators": [
+      "room-01.fan"
+    ]
+  },
+  "requirements": {
+    "features": [
+      "duration",
+      "cooldown",
+      "manual_override",
+      "freshness",
+      "reported_state"
+    ],
+    "device_independence": true
+  },
+  "candidate_runtimes": [
+    "room-01",
+    "edge-01"
+  ]
+}

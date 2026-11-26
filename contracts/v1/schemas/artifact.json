@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drak.invalid/contracts/v1/artifact.json",
+  "type": "object",
+  "properties": {
+    "artifact_format": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "target_kind": {
+      "enum": [
+        "device",
+        "edge"
+      ]
+    },
+    "target": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "trigger": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "sensor_update"
+            },
+            "source": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+            }
+          },
+          "required": [
+            "type",
+            "source"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "timer"
+            },
+            "interval_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2147483647
+            },
+            "source": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+            }
+          },
+          "required": [
+            "type",
+            "interval_ms",
+            "source"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+          },
+          "sensor": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+          },
+          "unit": {
+            "enum": [
+              "milli_celsius",
+              "none"
+            ]
+          },
+          "op": {
+            "enum": [
+              "gt",
+              "gte",
+              "lt",
+              "lte",
+              "eq",
+              "neq"
+            ]
+          },
+          "value": {
+            "type": [
+              "integer",
+              "boolean"
+            ]
+          },
+          "duration_ms": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647
+          },
+          "actuator": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+          },
+          "state": {
+            "enum": [
+              "on",
+              "off"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "sensor",
+          "unit",
+          "op",
+          "value",
+          "duration_ms",
+          "actuator",
+          "state"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 8
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "cooldown_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "max_sensor_age_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "respect_manual_override": {
+          "const": true
+        }
+      },
+      "required": [
+        "cooldown_ms",
+        "max_sensor_age_ms",
+        "respect_manual_override"
+      ],
+      "additionalProperties": false
+    },
+    "verification": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "enum": [
+            "reported_state",
+            "physical_feedback"
+          ]
+        },
+        "timeout_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "method",
+        "timeout_ms"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "artifact_format",
+    "id",
+    "version",
+    "target_kind",
+    "target",
+    "trigger",
+    "rules",
+    "constraints",
+    "verification"
+  ],
+  "additionalProperties": false
+}

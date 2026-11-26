@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drak.invalid/contracts/v1/state.json",
+  "type": "object",
+  "properties": {
+    "device_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "boot_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2147483647
+    },
+    "sensors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+          },
+          "value": {
+            "type": [
+              "number",
+              "boolean",
+              "null"
+            ]
+          },
+          "unit": {
+            "enum": [
+              "celsius",
+              "none"
+            ]
+          },
+          "quality": {
+            "enum": [
+              "observed",
+              "unknown",
+              "invalid"
+            ]
+          },
+          "sample_age_ms": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647
+          }
+        },
+        "required": [
+          "id",
+          "value",
+          "unit",
+          "quality",
+          "sample_age_ms"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 128
+    },
+    "actuators": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+          },
+          "reported": {
+            "enum": [
+              "on",
+              "off",
+              "unknown"
+            ]
+          },
+          "evidence": {
+            "enum": [
+              "driver_report",
+              "physical_feedback",
+              "none"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "reported",
+          "evidence"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 128
+    }
+  },
+  "required": [
+    "device_id",
+    "boot_id",
+    "sequence",
+    "sensors",
+    "actuators"
+  ],
+  "additionalProperties": false
+}

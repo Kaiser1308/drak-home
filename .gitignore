@@ -1,0 +1,31 @@
+# ESP-IDF
+device/build/
+device/build-host/
+device/sdkconfig
+device/sdkconfig.old
+device/managed_components/
+build/
+build-host/
+sdkconfig.old
+
+# Go
+edge/bin/
+*.test
+*.out
+edge-junit.xml
+
+# Test reports
+*-junit.xml
+junit.xml
+
+# Secrets / local config (never commit)
+.env
+.env.*
+*.local
+secrets*.h
+device/main/secrets.*
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store

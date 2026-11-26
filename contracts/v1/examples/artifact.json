@@ -1,0 +1,42 @@
+{
+  "artifact_format": 1,
+  "id": "bedroom_cooling",
+  "version": 1,
+  "target_kind": "device",
+  "target": "room-01",
+  "trigger": {
+    "type": "sensor_update",
+    "source": "temperature"
+  },
+  "rules": [
+    {
+      "id": "cooling_on",
+      "sensor": "temperature",
+      "unit": "milli_celsius",
+      "op": "gt",
+      "value": 30000,
+      "duration_ms": 10000,
+      "actuator": "fan",
+      "state": "on"
+    },
+    {
+      "id": "cooling_off",
+      "sensor": "temperature",
+      "unit": "milli_celsius",
+      "op": "lt",
+      "value": 28000,
+      "duration_ms": 10000,
+      "actuator": "fan",
+      "state": "off"
+    }
+  ],
+  "constraints": {
+    "cooldown_ms": 60000,
+    "max_sensor_age_ms": 15000,
+    "respect_manual_override": true
+  },
+  "verification": {
+    "method": "reported_state",
+    "timeout_ms": 5000
+  }
+}

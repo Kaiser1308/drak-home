@@ -1,0 +1,47 @@
+{
+  "protocol_version": "1.0",
+  "device_id": "room-01",
+  "boot_id": "boot-001",
+  "hardware": "esp32",
+  "firmware_version": "0.1.0",
+  "sensors": [
+    {
+      "id": "temperature",
+      "type": "temperature",
+      "unit": "celsius"
+    }
+  ],
+  "actuators": [
+    {
+      "id": "fan",
+      "type": "relay",
+      "commands": [
+        "on",
+        "off"
+      ]
+    }
+  ],
+  "runtime": {
+    "automation": true,
+    "max_automations": 16,
+    "max_rules_per_automation": 8,
+    "max_artifact_bytes": 2048,
+    "operators": [
+      "gt",
+      "lt",
+      "eq"
+    ],
+    "triggers": [
+      "sensor_update"
+    ],
+    "features": [
+      "duration",
+      "cooldown",
+      "manual_override",
+      "freshness",
+      "reported_state"
+    ],
+    "persistent": true,
+    "rollback": true
+  }
+}

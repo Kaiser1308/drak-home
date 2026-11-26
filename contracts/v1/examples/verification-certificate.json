@@ -1,0 +1,12 @@
+{
+  "example_only": true,
+  "automation_id": "bedroom_cooling",
+  "artifact_hash": "sha256:5f53ed9427e2f906b95540da8afafa3ae3da8efce219870a32a7107094354216",
+  "target": "room-01",
+  "compiler_version": "TBD",
+  "policy_version": "TBD",
+  "suite_hash": null,
+  "verification": "not_run",
+  "authorization": "not_approved",
+  "deployable": false
+}

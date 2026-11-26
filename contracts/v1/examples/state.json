@@ -1,0 +1,21 @@
+{
+  "device_id": "room-01",
+  "boot_id": "boot-001",
+  "sequence": 10,
+  "sensors": [
+    {
+      "id": "temperature",
+      "value": 31.2,
+      "unit": "celsius",
+      "quality": "observed",
+      "sample_age_ms": 0
+    }
+  ],
+  "actuators": [
+    {
+      "id": "fan",
+      "reported": "off",
+      "evidence": "driver_report"
+    }
+  ]
+}

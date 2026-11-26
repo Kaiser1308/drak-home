@@ -1,0 +1,226 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drak.invalid/contracts/v1/automation.json",
+  "type": "object",
+  "properties": {
+    "dsl_version": {
+      "const": "0.1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "intent": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024
+    },
+    "placement": {
+      "type": "object",
+      "properties": {
+        "strategy": {
+          "const": "lowest_capable_layer"
+        },
+        "require_device_independence": {
+          "type": "boolean"
+        },
+        "require_internet_independence": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "strategy",
+        "require_device_independence",
+        "require_internet_independence"
+      ],
+      "additionalProperties": false
+    },
+    "trigger": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "sensor_update"
+            },
+            "source": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+            }
+          },
+          "required": [
+            "type",
+            "source"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "timer"
+            },
+            "interval_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2147483647
+            },
+            "source": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+            }
+          },
+          "required": [
+            "type",
+            "interval_ms",
+            "source"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+          },
+          "condition": {
+            "type": "object",
+            "properties": {
+              "operator": {
+                "enum": [
+                  "gt",
+                  "gte",
+                  "lt",
+                  "lte",
+                  "eq",
+                  "neq"
+                ]
+              },
+              "value": {
+                "type": [
+                  "number",
+                  "boolean"
+                ]
+              },
+              "duration_ms": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              }
+            },
+            "required": [
+              "operator",
+              "value",
+              "duration_ms"
+            ],
+            "additionalProperties": false
+          },
+          "action": {
+            "type": "object",
+            "properties": {
+              "capability": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+              },
+              "arguments": {
+                "type": "object",
+                "properties": {
+                  "state": {
+                    "enum": [
+                      "on",
+                      "off"
+                    ]
+                  }
+                },
+                "required": [
+                  "state"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "capability",
+              "arguments"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "condition",
+          "action"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 8
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "cooldown_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "max_sensor_age_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "respect_manual_override": {
+          "const": true
+        }
+      },
+      "required": [
+        "cooldown_ms",
+        "max_sensor_age_ms",
+        "respect_manual_override"
+      ],
+      "additionalProperties": false
+    },
+    "verification": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "enum": [
+            "reported_state",
+            "physical_feedback"
+          ]
+        },
+        "timeout_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "method",
+        "timeout_ms"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "dsl_version",
+    "id",
+    "version",
+    "intent",
+    "placement",
+    "trigger",
+    "rules",
+    "constraints",
+    "verification"
+  ],
+  "additionalProperties": false
+}

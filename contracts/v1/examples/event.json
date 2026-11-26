@@ -1,0 +1,10 @@
+{
+  "device_id": "room-01",
+  "boot_id": "boot-001",
+  "sequence": 10,
+  "event_id": "ev-10",
+  "kind": "sensor_update",
+  "details": {
+    "sensor": "temperature"
+  }
+}

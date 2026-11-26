@@ -1,0 +1,9 @@
+{
+  "deployment_id": "dep-1",
+  "automation_id": "bedroom_cooling",
+  "version": 1,
+  "generation": 1,
+  "artifact_hash": "sha256:5f53ed9427e2f906b95540da8afafa3ae3da8efce219870a32a7107094354216",
+  "target_boot_id": "boot-001",
+  "phase": "commit"
+}
