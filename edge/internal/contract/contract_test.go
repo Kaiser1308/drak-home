@@ -37,6 +37,19 @@ var skippedExamples = map[string]string{
 	"automation.yaml":               "YAML source form of automation.json; S0 has no YAML parser",
 }
 
+func validateFile(sch *jsonschema.Schema, path string) error {
+	f, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	doc, err := jsonschema.UnmarshalJSON(f)
+	if err != nil {
+		return err
+	}
+	return sch.Validate(doc)
+}
+
 func mustDir(t *testing.T) string {
 	t.Helper()
 	dir, err := Dir()
@@ -104,20 +117,12 @@ func TestAcceptanceContractExamplesValidate(t *testing.T) {
 			t.Errorf("example %s has no schema mapping; add it to exampleSchema or skippedExamples", name)
 			continue
 		}
-		t.Run(strings.TrimSuffix(name, ".json"), func(t *testing.T) {
-			f, err := os.Open(filepath.Join(dir, "examples", name))
-			if err != nil {
-				t.Fatal(err)
-			}
-			defer f.Close()
-			doc, err := jsonschema.UnmarshalJSON(f)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if err := schemas[schName].Validate(doc); err != nil {
-				t.Errorf("%s does not validate against %s: %v", name, schName, err)
-			}
-		})
+		// No t.Run subtests: APOS runOne cannot run one Go subtest alone
+		// (go test -run reports the parent too), so failures name the file.
+		if err := validateFile(schemas[schName], filepath.Join(dir, "examples", name)); err != nil {
+			t.Errorf("%s does not validate against %s: %v", name, schName, err)
+			continue
+		}
 		validated++
 	}
 	if validated != len(exampleSchema) {
